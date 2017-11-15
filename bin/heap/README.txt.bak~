@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE abiword PUBLIC "-//ABISOURCE//DTD AWML 1.0 Strict//EN" "http://www.abisource.com/awml.dtd">
+<abiword template="false" xmlns:ct="http://www.abisource.com/changetracking.dtd" xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:math="http://www.w3.org/1998/Math/MathML" xid-max="26" xmlns:dc="http://purl.org/dc/elements/1.1/" fileformat="1.1" xmlns:svg="http://www.w3.org/2000/svg" xmlns:awml="http://www.abisource.com/awml.dtd" xmlns="http://www.abisource.com/awml.dtd" xmlns:xlink="http://www.w3.org/1999/xlink" version="3.0.0" xml:space="preserve" props="dom-dir:ltr; document-footnote-restart-section:0; document-endnote-type:numeric; document-endnote-place-enddoc:1; document-endnote-initial:1; lang:en-US; document-endnote-restart-section:0; document-footnote-restart-page:0; document-footnote-type:numeric; document-footnote-initial:1; document-endnote-place-endsection:0">
+<!-- ======================================================================== -->
+<!-- This file is an AbiWord document.                                        -->
+<!-- AbiWord is a free, Open Source word processor.                           -->
+<!-- More information about AbiWord is available at http://www.abisource.com/ -->
+<!-- You should not edit this file by hand.                                   -->
+<!-- ======================================================================== -->
+
+<metadata>
+<m key="abiword.date_last_changed">Thu Mar  2 18:26:47 2017
+</m>
+<m key="abiword.generator">AbiWord</m>
+<m key="dc.date">Thu Mar  2 18:26:47 2017
+</m>
+<m key="dc.format">application/x-abiword</m>
+</metadata>
+<rdf>
+</rdf>
+<history version="1" edit-time="599" last-saved="1488497207" uid="68ece494-ff9e-11e6-8947-e9a11d09ef49">
+<version id="1" started="1488497207" uid="b4baab30-ff9f-11e6-8947-e9a11d09ef49" auto="0" top-xid="26"/>
+</history>
+<styles>
+<s type="P" name="Normal" basedon="" followedby="Current Settings" props="font-family:Times New Roman; margin-top:0pt; font-variant:normal; margin-left:0pt; text-indent:0in; widows:2; font-style:normal; font-weight:normal; text-decoration:none; color:000000; line-height:1.0; text-align:left; margin-bottom:0pt; text-position:normal; margin-right:0pt; bgcolor:transparent; font-size:12pt; font-stretch:normal"/>
+</styles>
+<pagesize pagetype="A4" orientation="portrait" width="210.000000" height="297.000000" units="mm" page-scale="1.000000"/>
+<section xid="3">
+<p style="Normal" xid="4" props="text-align:left; dom-dir:ltr">Handin: I don't intend to resubmit.</p>
+<p style="Normal" xid="5"><c></c></p>
+<p style="Normal" xid="6" props="text-align:left; dom-dir:ltr">DESIGN CHOICES</p>
+<p style="Normal" xid="7"><c></c></p>
+<p style="Normal" xid="8" props="text-align:left; dom-dir:ltr">(For a more detailed explanation on method implementation, see the relevant method header)</p>
+<p style="Normal" xid="9"><c></c></p>
+<p style="Normal" xid="10" props="text-align:left; dom-dir:ltr">MyHeap: In implementing the heap structure in MyHeap, the biggest challenge is figuring out how to up heap and down heap. Since these two functions are performed in many of the heap methods, I decided to factor them out into their own helper methods (one or both of them is called whenever a key is altered or an entry is added/removed/switched). In implementing both I used recursion. In the upheap method, this recursion just means that we continue to compare the key of the current element to its parents for as long as the current element is not the root or a swap does not occur (for more details, see the method header). The downheap method was a little trickier since there are three cases in which we need to take action- 1) the left child is the lesser child and less than the current element, 2) the right child is the lesser child and less than the current element, 3) both elements are equal and less than the current element. In the first and second case, we just swap the elements. In the third case, we randomize which child we pick to swap elements, since otherwise the tree could become grossly disproportional if there are many such cases. In all other cases, we do nothing and the recursion stops (the recursion stops if we've reached a leaf as well). Since the worst case for both upheap and downheap is traversal of the height of the tree, runtime is 0(logn) and all methods -like insert, removeMin, remove, and replaceKey- that call them in addition to constant runtime operation are also 0(logn). In addition to these helper methods, I factored out the code that checks key validity in a helper method called checkKey- since we must check passed in key validity a number of times.</p>
+<p style="Normal" xid="11"><c></c></p>
+<p style="Normal" xid="12" props="text-align:left; dom-dir:ltr">(***For details on removing and inserting into the heap, see MyLinkedHeapTree below)</p>
+<p style="Normal" xid="13"><c></c></p>
+<p style="Normal" xid="14" props="text-align:left; dom-dir:ltr">MyHeapEntry: In addition to the getKey and getValue methods, I created mutator methods to be able to reset the key and value (which I represented with instance variables) from the MyHeap class, specifically in myHeap's replaceKey and replaceValue methods. More importantly, a MyHeapEntry should know about its location in the heap so that we don't have to iterate through a large portion of the tree to find it (particularly in the remove amd replaceKey methods of MyHeap). Thus, I stored the position of the MyHeapEntry as an instance variable and created a getter/mutator methods to be able to access and change the position variable as the position of the MyHeapEntry is changing. Accordingly, in MyHeap, every time we swap MyHeapEntrys between locations, we have to reset the position by calling the MyHeapEntry's setPosition method. </p>
+<p style="Normal" xid="15"><c></c></p>
+<p style="Normal" xid="16" props="text-align:left; dom-dir:ltr">MyLinkedHeapTree: Our linked tree alters the functionality of a linked binary tree in that we only add and delete at the "last" node (by last node, we mean the left-most node at the bottom-most level of the tree) thus maintaining left-complete status. To be able to keep track of this last node location, I use a deque structure that contains all the nodes (or rather, their positions) in the tree that don't already have two children- in the order that they were added. That means we can utilize the two-ended functionality of the deque in adding/removing in the front and back. More specifically, the first element in the deque will always be the parent of the "last" node, since this is the oldest element that doesn't have two children. Thus we can access this front, removing it from the deque if it has two children and adding it back if a child is removed. We add any newly created nodes to the back or remove them from the deque if we're removing them from the tree. Therefore, this back will always be the last added node, which is how we keep track of the last node (with the deque's getLast method). Also significant is the inclusion of a getElement method; this method, the most significant contrived method to the functionality of the tree, allows the element of a given location to be accessed so that in MyHeap, we can access the MyHeapEntry's given the location. In this method, this is accomplished by using the tree's built in replace method. We replace the element stored at the location with the placeholder null so that we can access the element, and then we put back the element after accessing it. This method proves extremely helpful in implementing MyHeap and adding functionality to MyLinkedHeapTree.</p>
+<p style="Normal" xid="17" props="text-align:left; dom-dir:ltr">	Add method- in this method, we get the first node of the deque, which is the parent, and then check if it has a left child. If it has a left child, we add a new node as the right child. We know it can't have a right child because if it were to have two children, it wouldn't be in the deque. We then remove it from the deque becaues it now has two children. If it doesn't have a left child, add a new node as the left child. We know that this is the "last" node location.</p>
+<p style="Normal" xid="18" props="text-align:left; dom-dir:ltr">	Remove method- in this method, we first get the parent of the last node with the tree's built in parent method. Then we check if the parent has a right child. If the parent has a right child, we know that the last node must be this right child (it can't be the left child by definition), so we remove it from the tree and from the deque. We then add the parent to the deque because it now doesn't have both a left and a right child. If parent doesn't have a right child, we know the last node must be the left child, since it must have at least one child if it's a parent. Thus, we remove it from the tree, but not the deque since it still doesn't have both a left and a right child. </p>
+<p style="Normal" xid="19" props="text-align:left; dom-dir:ltr">	***Since we only add/remove at the "last" node, in MyHeap, when we're removing or adding any nodes not at the last node position (like the minimum, or root), we must first swap elements between that position and this last position before removing (updating the MyHeapEntry position each time). This is why we need to upHeap and downHeap afterwards. </p>
+<p style="Normal" xid="20" props="text-align:left; dom-dir:ltr">	Running time of methods- the add and remove methods are both constant runtime since they both only contain constant runtime operations (specifically accessing, adding, and removing from the front/back of the deque and adding or removing from the tree). The getElement method and the getLast method are also constant runtime- both only have simple constant runtime operations like accessing elements in the deque or elements at a given position. In none of the methods of MyLinkedHeapTree do we have to iterate over elements or recursively call methods.</p>
+<p style="Normal" xid="21"><c></c></p>
+<p style="Normal" xid="22" props="text-align:left; dom-dir:ltr">TESTING</p>
+<p style="Normal" xid="1" props="text-align:left; dom-dir:ltr"><c></c></p>
+<p style="Normal" xid="2" props="text-align:left; dom-dir:ltr">MyLinkedHeapTreeTest: Beyond testing regular functionality of the four implemented methods, we also test the generic functionality </p>
+<p style="Normal" xid="23"><c></c></p>
+<p style="Normal" xid="24" props="text-align:left; dom-dir:ltr">Known Bugs: The remove method of MyHeap alters the location of the entry that was previously in the last node location. To elaborate, since we must swap elements between the last node and the position of the element to be removed, we're also moving the last node element to a location which may very well likely be in a different subtree. UpHeaping and downHeaping corrects for the priority order so that the properties of the heap are maintained but the difference in subtree locations are not corrected for. </p>
+<p style="Normal" xid="25"><c></c></p>
+<p style="Normal" xid="26"></p>
+</section>
+</abiword>
